@@ -1,40 +1,37 @@
-import tensorflow_datasets as tfds
 import matplotlib.pyplot as plt
 import numpy as np
+import tensorflow_datasets as tfds
 
-# Load dataset (defaults to split='train')
-ds = tfds.load('agrivle_dataset_v1', split='train', data_dir="~/tensorflow_datasets")
+# 👇 Import your dataset builder explicitly
+from agrivla_dataset_v1_dataset_builder import AgrivleDatasetV1
 
-# Take the first episode
-for episode in ds.take(1):
+# 👇 Instantiate and load it locally
+builder = AgrivleDatasetV1(data_dir="~/tensorflow_datasets")
+builder.download_and_prepare()
+ds = builder.as_dataset(split='train')
+
+# ✅ Visualize one example
+for episode in tfds.as_numpy(ds.take(1)):
     steps = episode['steps']
-    metadata = episode['episode_metadata']
-    print(f"\n📁 File path: {metadata['file_path'].numpy().decode()}")
-    
-    # This dataset has one step per episode
+    meta = episode['episode_metadata']
+
     for step in steps:
         obs = step['observation']
-        action = step['action'].numpy()
-        state = obs['state'].numpy()
-        instruction = step['language_instruction'].numpy().decode()
+        base_img = obs['image']
+        wrist_img = obs['wrist_image']
 
-        base_img = obs['image'].numpy()
-        wrist_img = obs['wrist_image'].numpy()
+        plt.figure(figsize=(10, 4))
+        plt.subplot(1, 2, 1)
+        plt.imshow(base_img)
+        plt.title("Base RGB")
+        plt.axis("off")
 
-        # Display both images
-        fig, axs = plt.subplots(1, 2, figsize=(10, 5))
-        axs[0].imshow(base_img)
-        axs[0].set_title("Base RGB")
-        axs[0].axis("off")
-
-        axs[1].imshow(wrist_img)
-        axs[1].set_title("Wrist RGB")
-        axs[1].axis("off")
-
-        plt.suptitle("AgrivleDatasetV1 Visual Sample")
-        plt.tight_layout()
+        plt.subplot(1, 2, 2)
+        plt.imshow(wrist_img)
+        plt.title("Wrist RGB")
+        plt.axis("off")
         plt.show()
 
-        print(f"🦾 Joint State: {np.round(state, 3)}")
-        print(f"🎮 Action: {np.round(action, 3)}")
-        print(f"🗣️ Instruction: \"{instruction}\"\n")
+        print(f"🦾 State: {step['observation']['state']}")
+        print(f"🎮 Action: {step['action']}")
+        print(f"🗣️ Instruction: {step['language_instruction']}")
