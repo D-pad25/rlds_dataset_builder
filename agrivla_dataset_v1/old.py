@@ -5,7 +5,6 @@ import numpy as np
 import tensorflow as tf
 import tensorflow_datasets as tfds
 import tensorflow_hub as hub
-import os
 import pickle
 
 class AgrivleDatasetV1(tfds.core.GeneratorBasedBuilder):
@@ -92,30 +91,25 @@ class AgrivleDatasetV1(tfds.core.GeneratorBasedBuilder):
         """Define data splits."""
         return {
             'train': self._generate_examples(
-            path='/mnt/c/Users/Danie/Documents/QUT - Local/ThesisLocal/CleanData/*'),
+            path='/mnt/c/Users/Danie/Documents/QUT - Local/ThesisLocal/0513_183547_unique_wrist/*.pkl'),
             # 'val': self._generate_examples(path='data/val/episode_*.npy'),
         }
 
     def _generate_examples(self, path) -> Iterator[Tuple[str, Any]]:
-        """Generator of episodes by grouping step .pkl files."""
+        """Generator of single-step episodes from .pkl files."""
 
-        # Step 1: Find all episode directories
-        episode_dirs = sorted(glob.glob(path))  # e.g. /data/train/episode_*
+        episode_paths = glob.glob(path)
 
-        def _parse_example(episode_dir):
-            # Step 2: Load and sort all step .pkl files within the episode
-            step_files = sorted(glob.glob(os.path.join(episode_dir, '*.pkl')))
+        for episode_path in episode_paths:
+            with open(episode_path, 'rb') as f:
+                step = pickle.load(f)
 
-            episode = []
-            for i, step_path in enumerate(step_files):
-                with open(step_path, 'rb') as f:
-                    step = pickle.load(f)
+            # Provide a default or dynamic instruction
+            instruction = "Perform manipulation task"
+            language_embedding = self._embed([instruction])[0].numpy()
 
-                # Language instruction (can be customized later)
-                instruction = "Pick a ripe tomato and drop it in the grey bucket."
-                language_embedding = self._embed([instruction])[0].numpy()
-
-                episode.append({
+            sample = {
+                'steps': [{
                     'observation': {
                         'image': step['base_rgb'],
                         'wrist_image': step['wrist_rgb'],
@@ -123,30 +117,75 @@ class AgrivleDatasetV1(tfds.core.GeneratorBasedBuilder):
                     },
                     'action': step['control'].astype(np.float32),
                     'discount': 1.0,
-                    'reward': float(i == (len(step_files) - 1)),
-                    'is_first': i == 0,
-                    'is_last': i == (len(step_files) - 1),
-                    'is_terminal': i == (len(step_files) - 1),
+                    'reward': 1.0,
+                    'is_first': True,
+                    'is_last': True,
+                    'is_terminal': True,
                     'language_instruction': instruction,
                     'language_embedding': language_embedding,
-                })
-
-            sample = {
-                'steps': episode,
+                }],
                 'episode_metadata': {
-                    'file_path': episode_dir
+                    'file_path': episode_path,
                 },
             }
 
-            return episode_dir, sample
+            yield episode_path, sample
 
-        # Use single-thread parsing for now
-        for episode_dir in episode_dirs:
-            yield _parse_example(episode_dir)
+def _generate_examples(self, path) -> Iterator[Tuple[str, Any]]:
+        """Generator of examples for each split."""
 
-        # For large datasets, consider switching to Apache Beam:
-        # beam = tfds.core.lazy_imports.apache_beam
-        # return (
-        #     beam.Create(episode_dirs)
-        #     | beam.Map(_parse_example)
-        # )
+        def _parse_example(episode_path):
+            # load raw data --> this should change for your dataset
+            #data = np.load(episode_path, allow_pickle=True)     # this is a list of dicts in our case
+
+            with open(episode_path, 'rb') as f:
+                data = pickle.load(f)
+
+            # assemble episode --> here we're assuming demos so we set reward to 1 at the end
+            episode = []
+            for i in range(len(data['timestamp'])):
+                # compute Kona language embedding
+                language_embedding = self._embed([data['task']])[0].numpy()
+
+                episode.append({
+                    'observation': {
+                        'image': data['external_image'][i][...,::-1],
+                        'wrist_image': data['hand_image'][i][...,::-1],
+                        'state': np.array(data['joint_positions'][i] + data['joint_velocities'][i][:-2]).astype(np.float32),
+                    },
+                    'action': np.concatenate([data['gripper_position'][i], data['gripper_quaternion'][i], data['joint_positions'][i][-2:]]).astype(np.float32),
+                    'discount': 1.0,
+                    'reward': float(data['joint_positions'][i][-1]<0.005),
+                    'is_first': i == 0,
+                    'is_last': i == (len(data) - 1),
+                    'is_terminal': i == (len(data) - 1),
+                    'language_instruction': data['task'],
+                    'language_embedding': language_embedding,
+                })
+
+            # create output data sample
+            sample = {
+                'steps': episode,
+                'episode_metadata': {
+                    'file_path': episode_path
+                }
+            }
+
+            # if you want to skip an example for whatever reason, simply return None
+            return episode_path, sample
+
+        # create list of all examples
+        
+        episode_paths = glob.glob(path)
+
+        # for smallish datasets, use single-thread parsing
+        for sample in episode_paths:
+           yield _parse_example(sample)
+            
+
+        #for large datasets use beam to parallelize data parsing (this will have initialization overhead)
+        #beam = tfds.core.lazy_imports.apache_beam
+        #return (
+        #        beam.Create(episode_paths)
+        #        | beam.Map(_parse_example)
+        #)
