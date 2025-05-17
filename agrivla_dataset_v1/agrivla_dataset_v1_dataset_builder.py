@@ -114,7 +114,9 @@ class AgrivleDatasetV1(tfds.core.GeneratorBasedBuilder):
 
                 # Language instruction (can be customized later)
                 instruction = "Pick a ripe tomato and drop it in the grey bucket."
+                print("Generating language embedding...")
                 language_embedding = self._embed([instruction])[0].numpy()
+                print("Language embedding done.")
 
                 episode.append({
                     'observation': {
