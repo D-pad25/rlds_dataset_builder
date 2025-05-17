@@ -107,16 +107,17 @@ class AgrivleDatasetV1(tfds.core.GeneratorBasedBuilder):
             # Step 2: Load and sort all step .pkl files within the episode
             step_files = sorted(glob.glob(os.path.join(episode_dir, '*.pkl')))
 
+            # Language instruction (can be customized later)
+            instruction = "Pick a ripe tomato and drop it in the grey bucket."
+            # print("Generating language embedding...")
+            language_embedding = self._embed([instruction])[0].numpy()
+            # print("Language embedding done.")
+
             episode = []
             for i, step_path in enumerate(step_files):
                 with open(step_path, 'rb') as f:
                     step = pickle.load(f)
 
-                # Language instruction (can be customized later)
-                instruction = "Pick a ripe tomato and drop it in the grey bucket."
-                # print("Generating language embedding...")
-                language_embedding = self._embed([instruction])[0].numpy()
-                # print("Language embedding done.")
 
                 episode.append({
                     'observation': {
@@ -144,13 +145,13 @@ class AgrivleDatasetV1(tfds.core.GeneratorBasedBuilder):
             return episode_dir, sample
 
         # Use single-thread parsing for now
-        # for episode_dir in episode_dirs:
-        #     print(f"Parsing: {episode_dir}")  # Add this
-        #     yield _parse_example(episode_dir)
+        for episode_dir in episode_dirs:
+            print(f"Parsing: {episode_dir}")  # Add this
+            yield _parse_example(episode_dir)
 
         # For large datasets, consider switching to Apache Beam:
-        beam = tfds.core.lazy_imports.apache_beam
-        return (
-            beam.Create(episode_dirs)
-            | beam.Map(_parse_example)
-        )
+        # beam = tfds.core.lazy_imports.apache_beam
+        # return (
+        #     beam.Create(episode_dirs)
+        #     | beam.Map(_parse_example)
+        # )
