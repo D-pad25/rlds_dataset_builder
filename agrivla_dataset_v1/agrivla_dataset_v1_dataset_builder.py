@@ -101,6 +101,7 @@ class AgrivleDatasetV1(tfds.core.GeneratorBasedBuilder):
 
         # Step 1: Find all episode directories
         episode_dirs = sorted(glob.glob(path))  # e.g. /data/train/episode_*
+        print(f"Found {len(episode_dirs)} episodes")  # Add this
 
         def _parse_example(episode_dir):
             # Step 2: Load and sort all step .pkl files within the episode
@@ -142,6 +143,7 @@ class AgrivleDatasetV1(tfds.core.GeneratorBasedBuilder):
 
         # Use single-thread parsing for now
         for episode_dir in episode_dirs:
+            print(f"Parsing: {episode_dir}")  # Add this
             yield _parse_example(episode_dir)
 
         # For large datasets, consider switching to Apache Beam:
