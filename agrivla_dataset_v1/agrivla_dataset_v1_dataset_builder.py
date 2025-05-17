@@ -113,7 +113,7 @@ class AgrivleDatasetV1(tfds.core.GeneratorBasedBuilder):
                     'observation': {
                         'image': step['base_rgb'],
                         'wrist_image': step['wrist_rgb'],
-                        'state': step['joint_positions'],
+                        'state': step['joint_positions'].astype(np.float32),
                     },
                     'action': step['control'].astype(np.float32),
                     'discount': 1.0,
