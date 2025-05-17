@@ -5,6 +5,7 @@ import numpy as np
 import tensorflow as tf
 import tensorflow_datasets as tfds
 import tensorflow_hub as hub
+import os
 import pickle
 
 class AgrivleDatasetV1(tfds.core.GeneratorBasedBuilder):
@@ -91,25 +92,30 @@ class AgrivleDatasetV1(tfds.core.GeneratorBasedBuilder):
         """Define data splits."""
         return {
             'train': self._generate_examples(
-            path='/mnt/c/Users/Danie/Documents/QUT - Local/ThesisLocal/0513_183547_unique_wrist/*.pkl'),
+            path='/mnt/c/Users/Danie/Documents/QUT - Local/ThesisLocal/*'),
             # 'val': self._generate_examples(path='data/val/episode_*.npy'),
         }
 
     def _generate_examples(self, path) -> Iterator[Tuple[str, Any]]:
-        """Generator of single-step episodes from .pkl files."""
+        """Generator of episodes by grouping step .pkl files."""
 
-        episode_paths = glob.glob(path)
+        # Step 1: Find all episode directories
+        episode_dirs = sorted(glob.glob(path))  # e.g. /data/train/episode_*
 
-        for episode_path in episode_paths:
-            with open(episode_path, 'rb') as f:
-                step = pickle.load(f)
+        def _parse_example(episode_dir):
+            # Step 2: Load and sort all step .pkl files within the episode
+            step_files = sorted(glob.glob(os.path.join(episode_dir, '*.pkl')))
 
-            # Provide a default or dynamic instruction
-            instruction = "Perform manipulation task"
-            language_embedding = self._embed([instruction])[0].numpy()
+            episode = []
+            for i, step_path in enumerate(step_files):
+                with open(step_path, 'rb') as f:
+                    step = pickle.load(f)
 
-            sample = {
-                'steps': [{
+                # Language instruction (can be customized later)
+                instruction = "Pick a ripe tomato and drop it in the grey bucket."
+                language_embedding = self._embed([instruction])[0].numpy()
+
+                episode.append({
                     'observation': {
                         'image': step['base_rgb'],
                         'wrist_image': step['wrist_rgb'],
@@ -117,17 +123,30 @@ class AgrivleDatasetV1(tfds.core.GeneratorBasedBuilder):
                     },
                     'action': step['control'].astype(np.float32),
                     'discount': 1.0,
-                    'reward': 1.0,
-                    'is_first': True,
-                    'is_last': True,
-                    'is_terminal': True,
+                    'reward': float(i == (len(step_files) - 1)),
+                    'is_first': i == 0,
+                    'is_last': i == (len(step_files) - 1),
+                    'is_terminal': i == (len(step_files) - 1),
                     'language_instruction': instruction,
                     'language_embedding': language_embedding,
-                }],
+                })
+
+            sample = {
+                'steps': episode,
                 'episode_metadata': {
-                    'file_path': episode_path,
+                    'file_path': episode_dir
                 },
             }
 
-            yield episode_path, sample
+            return episode_dir, sample
 
+        # Use single-thread parsing for now
+        for episode_dir in episode_dirs:
+            yield _parse_example(episode_dir)
+
+        # For large datasets, consider switching to Apache Beam:
+        # beam = tfds.core.lazy_imports.apache_beam
+        # return (
+        #     beam.Create(episode_dirs)
+        #     | beam.Map(_parse_example)
+        # )
