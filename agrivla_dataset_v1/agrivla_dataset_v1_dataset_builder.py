@@ -90,16 +90,10 @@ class AgrivleDatasetV1(tfds.core.GeneratorBasedBuilder):
 
     def _split_generators(self, dl_manager: tfds.download.DownloadManager):
         """Define data splits."""
-        # return {
-        #     'train': self._generate_examples(
-        #     path='/mnt/c/Users/Danie/Documents/QUT - Local/ThesisLocal/CleanData/*'),
-        #     # 'val': self._generate_examples(path='data/val/episode_*.npy'),
-        # }
-    
         return {
-            'train': lambda: self._generate_examples(
-                path='/mnt/c/Users/Danie/Documents/QUT - Local/ThesisLocal/CleanData/*'
-            )
+            'train': self._generate_examples(
+            path='/mnt/c/Users/Danie/Documents/QUT - Local/ThesisLocal/CleanData/*'),
+            # 'val': self._generate_examples(path='data/val/episode_*.npy'),
         }
 
     def _generate_examples(self, path) -> Iterator[Tuple[str, Any]]:
