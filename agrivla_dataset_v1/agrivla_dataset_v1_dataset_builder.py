@@ -144,13 +144,13 @@ class AgrivleDatasetV1(tfds.core.GeneratorBasedBuilder):
             return episode_dir, sample
 
         # Use single-thread parsing for now
-        for episode_dir in episode_dirs:
-            print(f"Parsing: {episode_dir}")  # Add this
-            yield _parse_example(episode_dir)
+        # for episode_dir in episode_dirs:
+        #     print(f"Parsing: {episode_dir}")  # Add this
+        #     yield _parse_example(episode_dir)
 
         # For large datasets, consider switching to Apache Beam:
-        # beam = tfds.core.lazy_imports.apache_beam
-        # return (
-        #     beam.Create(episode_dirs)
-        #     | beam.Map(_parse_example)
-        # )
+        beam = tfds.core.lazy_imports.apache_beam
+        return (
+            beam.Create(episode_dirs)
+            | beam.Map(_parse_example)
+        )
