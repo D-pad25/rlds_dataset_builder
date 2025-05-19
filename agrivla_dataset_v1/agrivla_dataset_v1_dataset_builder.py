@@ -90,16 +90,15 @@ class AgrivleDatasetV1(tfds.core.GeneratorBasedBuilder):
 
     def _split_generators(self, dl_manager: tfds.download.DownloadManager):
         """Define data splits."""
-        print("[DEBUG] Inside _split_generators")
         return {
             'train': self._generate_examples(
-            path='/mnt/E/VLA_data/CleanData/*'),
+            path='/mnt/c/Users/Danie/Documents/QUT - Local/ThesisLocal/CleanData/*'),
             # 'val': self._generate_examples(path='data/val/episode_*.npy'),
         }
 
     def _generate_examples(self, path) -> Iterator[Tuple[str, Any]]:
         """Generator of episodes by grouping step .pkl files."""
-        print(f"[DEBUG] Searching for: {path}")
+
         # Step 1: Find all episode directories
         episode_dirs = sorted(glob.glob(path))  # e.g. /data/train/episode_*
         print(f"Found {len(episode_dirs)} episodes")  # Add this
@@ -156,6 +155,3 @@ class AgrivleDatasetV1(tfds.core.GeneratorBasedBuilder):
         #     beam.Create(episode_dirs)
         #     | beam.Map(_parse_example)
         # )
-if __name__ == "__main__":
-    builder = AgrivleDatasetV1()
-    builder.download_and_prepare()
