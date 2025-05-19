@@ -90,6 +90,7 @@ class AgrivleDatasetV1(tfds.core.GeneratorBasedBuilder):
 
     def _split_generators(self, dl_manager: tfds.download.DownloadManager):
         """Define data splits."""
+        print("[DEBUG] Inside _split_generators")
         return {
             'train': self._generate_examples(
             path='/mnt/E/VLA_data/CleanData/*'),
