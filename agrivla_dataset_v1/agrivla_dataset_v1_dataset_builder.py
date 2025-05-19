@@ -92,7 +92,7 @@ class AgrivleDatasetV1(tfds.core.GeneratorBasedBuilder):
         """Define data splits."""
         return {
             'train': self._generate_examples(
-            path='/mnt/c/Users/Danie/Documents/QUT - Local/ThesisLocal/CleanData/*'),
+            path='/mnt/E/VLA_data/CleanData/*'),
             # 'val': self._generate_examples(path='data/val/episode_*.npy'),
         }
 
