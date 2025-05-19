@@ -156,3 +156,6 @@ class AgrivleDatasetV1(tfds.core.GeneratorBasedBuilder):
         #     beam.Create(episode_dirs)
         #     | beam.Map(_parse_example)
         # )
+if __name__ == "__main__":
+    builder = AgrivleDatasetV1()
+    builder.download_and_prepare()
