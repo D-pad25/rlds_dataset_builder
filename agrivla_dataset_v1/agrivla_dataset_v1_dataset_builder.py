@@ -98,7 +98,7 @@ class AgrivleDatasetV1(tfds.core.GeneratorBasedBuilder):
 
     def _generate_examples(self, path) -> Iterator[Tuple[str, Any]]:
         """Generator of episodes by grouping step .pkl files."""
-
+        print(f"[DEBUG] Searching for: {path}")
         # Step 1: Find all episode directories
         episode_dirs = sorted(glob.glob(path))  # e.g. /data/train/episode_*
         print(f"Found {len(episode_dirs)} episodes")  # Add this
