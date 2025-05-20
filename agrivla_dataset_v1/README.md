@@ -6,8 +6,8 @@
 
 Each `.pkl` file represents a single timestep and contains:
 
-- `base_rgb`: *(480×640×3)* RGB image from the base camera  
-- `wrist_rgb`: *(480×640×3)* RGB image from the wrist camera  
+- `base_rgb`: *(224×224×3)* RGB image from the base camera  
+- `wrist_rgb`: *(224×224×3)* RGB image from the wrist camera  
 - `joint_positions`: *7-DOF* arm joint angles  
 - `joint_velocities`: *7-DOF* joint velocities (not used in RLDS format, but retained in source)  
 - `ee_pos_quat`: *7D* end-effector position and orientation  

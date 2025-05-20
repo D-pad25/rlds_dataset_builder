@@ -27,13 +27,13 @@ class AgrivleDatasetV1(tfds.core.GeneratorBasedBuilder):
                 'steps': tfds.features.Dataset({
                     'observation': tfds.features.FeaturesDict({
                         'image': tfds.features.Image(
-                            shape=(480, 640, 3),
+                            shape=(224, 224, 3),
                             dtype=np.uint8,
                             encoding_format='png',
                             doc='Main camera RGB observation.',
                         ),
                         'wrist_image': tfds.features.Image(
-                            shape=(480, 640, 3),
+                            shape=(224, 224, 3),
                             dtype=np.uint8,
                             encoding_format='png',
                             doc='Wrist camera RGB observation.',
@@ -92,7 +92,9 @@ class AgrivleDatasetV1(tfds.core.GeneratorBasedBuilder):
         """Define data splits."""
         return {
             'train': self._generate_examples(
-            path='/mnt/e/VLA_data/CleanData/*'),
+            # path='/mnt/e/VLA_data/CleanData/*'),
+            # Test on E:\VLA_data\CleanData224\v5
+            path='/mnt/e/VLA_data/CleanData224/v5/*'),
             # 'val': self._generate_examples(path='data/val/episode_*.npy'),
         }
 
@@ -108,7 +110,7 @@ class AgrivleDatasetV1(tfds.core.GeneratorBasedBuilder):
             step_files = sorted(glob.glob(os.path.join(episode_dir, '*.pkl')))
 
             # Language instruction (can be customized later)
-            instruction = "Pick a ripe tomato and drop it in the grey bucket."
+            instruction = "Pick a ripe, red tomato and drop it in the blue bucket."
             # print("Generating language embedding...")
             language_embedding = self._embed([instruction])[0].numpy()
             # print("Language embedding done.")
@@ -155,3 +157,4 @@ class AgrivleDatasetV1(tfds.core.GeneratorBasedBuilder):
         #     beam.Create(episode_dirs)
         #     | beam.Map(_parse_example)
         # )
+
