@@ -34,8 +34,8 @@ def render_frame(base_img, wrist_img, state, action, instruction):
 
     return combined
 
-def create_episode_video(output_path="/mnt/e/VLA_data/movie/episode.mp4", fps=12):
-    builder = AgrivlaDatasetV1(data_dir="~/tensorflow_datasets")
+def create_episode_video(output_path="/mnt/e/VLA_data/movie/testtfds.mp4", fps=12):
+    builder = AgrivlaDatasetV1(data_dir="/mnt/e/TFDS_data")
     builder.download_and_prepare()
     ds = builder.as_dataset(split="train")
     episode = next(iter(tfds.as_numpy(ds.take(1))))  # Just one episode
