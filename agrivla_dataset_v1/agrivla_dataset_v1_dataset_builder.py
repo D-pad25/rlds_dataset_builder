@@ -95,7 +95,7 @@ class AgrivlaDatasetV1(tfds.core.GeneratorBasedBuilder):
             'train': self._generate_examples(
             # path='/mnt/e/VLA_data/CleanData/*'),
             # Test on E:\VLA_data\CleanData224\v5
-            path='/mnt/e/VLA_data/JoblibData224/*'),
+            path='/mnt/e/VLA_data/check/*'),
             # 'val': self._generate_examples(path='data/val/episode_*.npy'),
         }
 
