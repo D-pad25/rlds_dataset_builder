@@ -63,4 +63,4 @@ def create_episode_video(output_path="/mnt/e/VLA_data/movie/testtfds.mp4", fps=1
     print(f"✅ Video saved to: {output_path}")
 
 if __name__ == "__main__":
-    create_episode_video("/mnt/e/VLA_data/movie/episode.mp4", fps=12)
+    create_episode_video("/mnt/e/VLA_data/movie/testtfds.mp4", fps=12)
