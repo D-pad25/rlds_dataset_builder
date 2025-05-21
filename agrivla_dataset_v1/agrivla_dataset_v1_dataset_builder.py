@@ -9,8 +9,8 @@ import os
 import pickle
 import joblib
 
-class AgrivleDatasetV1(tfds.core.GeneratorBasedBuilder):
-    """DatasetBuilder for AgrivleDatasetV1."""
+class AgrivlaDatasetV1(tfds.core.GeneratorBasedBuilder):
+    """DatasetBuilder for AgrivlaDatasetV1."""
 
     VERSION = tfds.core.Version('1.0.0')
     RELEASE_NOTES = {
