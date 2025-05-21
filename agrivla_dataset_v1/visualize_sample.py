@@ -20,17 +20,17 @@ for episode in tfds.as_numpy(ds.take(1)):
         base_img = obs['image']
         wrist_img = obs['wrist_image']
 
-        plt.figure(figsize=(10, 4))
-        plt.subplot(1, 2, 1)
-        plt.imshow(base_img)
-        plt.title("Base RGB")
-        plt.axis("off")
+        # plt.figure(figsize=(10, 4))
+        # plt.subplot(1, 2, 1)
+        # plt.imshow(base_img)
+        # plt.title("Base RGB")
+        # plt.axis("off")
 
-        plt.subplot(1, 2, 2)
-        plt.imshow(wrist_img)
-        plt.title("Wrist RGB")
-        plt.axis("off")
-        plt.show()
+        # plt.subplot(1, 2, 2)
+        # plt.imshow(wrist_img)
+        # plt.title("Wrist RGB")
+        # plt.axis("off")
+        # plt.show()
 
         print(f"🦾 State: {step['observation']['state']}")
         print(f"🎮 Action: {step['action']}")
