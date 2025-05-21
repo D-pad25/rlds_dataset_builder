@@ -100,7 +100,7 @@ class AgrivlaDatasetV1(tfds.core.GeneratorBasedBuilder):
         }
 
     def _generate_examples(self, path) -> Iterator[Tuple[str, Any]]:
-        """Generator of episodes by grouping step .pkl files."""
+        """Generator of episodes from single-step .joblib files."""
 
         # Step 1: Find all episode directories
         episode_dirs = sorted(glob.glob(path))  # e.g. /data/train/episode_*
@@ -108,7 +108,7 @@ class AgrivlaDatasetV1(tfds.core.GeneratorBasedBuilder):
 
         def _parse_example(episode_dir):
             # Step 2: Load and sort all step .pkl files within the episode
-            step_files = sorted(glob.glob(os.path.join(episode_dir, '*.pkl')))
+            step_files = sorted(glob.glob(os.path.join(episode_dir, '*.joblib')))
 
             # Language instruction (can be customized later)
             instruction = "Pick a ripe, red tomato and drop it in the blue bucket."
