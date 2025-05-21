@@ -34,7 +34,7 @@ def render_frame(base_img, wrist_img, state, action, instruction):
 
     return combined
 
-def create_episode_video(output_path="/mnt/e/VLA_data//movie/episode.mp4", fps=1):
+def create_episode_video(output_path="/mnt/e/VLA_data/movie/episode.mp4", fps=12):
     builder = AgrivlaDatasetV1(data_dir="~/tensorflow_datasets")
     builder.download_and_prepare()
     ds = builder.as_dataset(split="train")
@@ -63,4 +63,4 @@ def create_episode_video(output_path="/mnt/e/VLA_data//movie/episode.mp4", fps=1
     print(f"✅ Video saved to: {output_path}")
 
 if __name__ == "__main__":
-    create_episode_video("agrivla_episode.mp4", fps=1)
+    create_episode_video("/mnt/e/VLA_data/movie/episode.mp4", fps=12)
