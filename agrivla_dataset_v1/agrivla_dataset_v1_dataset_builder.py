@@ -7,6 +7,7 @@ import tensorflow_datasets as tfds
 import tensorflow_hub as hub
 import os
 import pickle
+import joblib
 
 class AgrivleDatasetV1(tfds.core.GeneratorBasedBuilder):
     """DatasetBuilder for AgrivleDatasetV1."""
@@ -94,7 +95,7 @@ class AgrivleDatasetV1(tfds.core.GeneratorBasedBuilder):
             'train': self._generate_examples(
             # path='/mnt/e/VLA_data/CleanData/*'),
             # Test on E:\VLA_data\CleanData224\v5
-            path='/mnt/e/VLA_data/CleanData224/v5/*'),
+            path='E:\VLA_data\JoblibData224*'),
             # 'val': self._generate_examples(path='data/val/episode_*.npy'),
         }
 
@@ -117,9 +118,9 @@ class AgrivleDatasetV1(tfds.core.GeneratorBasedBuilder):
 
             episode = []
             for i, step_path in enumerate(step_files):
-                with open(step_path, 'rb') as f:
-                    step = pickle.load(f)
-
+                # with open(step_path, 'rb') as f:
+                #     step = pickle.load(f)
+                step = joblib.load(step_path)  # Load the step data
 
                 episode.append({
                     'observation': {
