@@ -3,7 +3,7 @@ import numpy as np
 import tensorflow_datasets as tfds
 from agrivla_dataset_v1_dataset_builder import AgrivlaDatasetV1
 
-def render_frame(base_img, wrist_img, state, action, instruction):
+def render_frame(base_img, wrist_img, state, action, prompt):
     # Combine images side by side
     base = cv2.cvtColor(base_img, cv2.COLOR_RGB2BGR)
     wrist = cv2.cvtColor(wrist_img, cv2.COLOR_RGB2BGR)
@@ -28,7 +28,7 @@ def render_frame(base_img, wrist_img, state, action, instruction):
         cv2.putText(combined, text, (10, y), font, scale, green, 1, cv2.LINE_AA)
         y += 20
 
-    put("Instruction: " + instruction.decode("utf-8") if isinstance(instruction, bytes) else instruction)
+    put("Prompt: " + prompt.decode("utf-8") if isinstance(prompt, bytes) else prompt)
     put("State: " + np.array2string(state, precision=2, separator=","))
     put("Action: " + np.array2string(action, precision=2, separator=","))
 
@@ -50,7 +50,7 @@ def create_episode_video(output_path="/mnt/e/VLA_data/movie/testtfds.mp4", fps=1
             wrist_img=obs["wrist_image"],
             state=obs["state"],
             action=step["action"],
-            instruction=step["language_instruction"]
+            instruction=step["prompt"]
         )
         frames.append(frame)
 
