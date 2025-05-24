@@ -49,8 +49,8 @@ def create_episode_video(output_path="/mnt/e/VLA_data/movie/testprompt.mp4", fps
             base_img=obs["image"],
             wrist_img=obs["wrist_image"],
             state=obs["state"],
+            prompt=obs["prompt"],
             action=step["action"],
-            instruction=step["prompt"]
         )
         frames.append(frame)
 
