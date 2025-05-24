@@ -100,7 +100,7 @@ class AgrivlaDatasetV1(tfds.core.GeneratorBasedBuilder):
             # path='/mnt/e/VLA_data/CleanData/*'),
             # Test on E:\VLA_data\CleanData224\v5
             # E:\VLA_data\JoblibData224_Steps
-            path='/mnt/e/Round1_addedPrompt/testJobLib/*'),
+            path='/mnt/e/Round1_addedPrompt/joblib/*'),
             # 'val': self._generate_examples(path='data/val/episode_*.npy'),
         }
 
