@@ -20,7 +20,7 @@ def render_frame(base_img, wrist_img, state, action, prompt):
     # Text
     y = 20
     font = cv2.FONT_HERSHEY_SIMPLEX
-    scale = 0.5
+    scale = 0.3
     green = (0, 255, 0)
 
     def put(text):
