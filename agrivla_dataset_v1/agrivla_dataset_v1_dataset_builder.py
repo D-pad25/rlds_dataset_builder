@@ -12,9 +12,10 @@ import joblib
 class AgrivlaDatasetV1(tfds.core.GeneratorBasedBuilder):
     """DatasetBuilder for AgrivlaDatasetV1."""
 
-    VERSION = tfds.core.Version('1.0.0')
+    VERSION = tfds.core.Version('1.0.1')
     RELEASE_NOTES = {
       '1.0.0': 'Initial release.',
+      '1.0.1': 'Added language instruction and prompt features.'
     }
 
     def __init__(self, *args, **kwargs):
@@ -44,7 +45,10 @@ class AgrivlaDatasetV1(tfds.core.GeneratorBasedBuilder):
                             dtype=np.float32,
                             doc='Robot state, consists of [6x robot joint angles, '
                                 '1x gripper position].',
-                        )
+                        ),
+                        'prompt': tfds.features.Text(
+                            doc='Prompt for the robot, if available. ',
+                        ),
                     }),
                     'action': tfds.features.Tensor(
                         shape=(7,),
@@ -95,7 +99,8 @@ class AgrivlaDatasetV1(tfds.core.GeneratorBasedBuilder):
             'train': self._generate_examples(
             # path='/mnt/e/VLA_data/CleanData/*'),
             # Test on E:\VLA_data\CleanData224\v5
-            path='/mnt/e/VLA_Data_Clean/joblib/*'),
+            # E:\VLA_data\JoblibData224_Steps
+            path='/mnt/e/VLA_Data/JoblibData224_Steps/joblib/*'),
             # 'val': self._generate_examples(path='data/val/episode_*.npy'),
         }
 
@@ -127,6 +132,7 @@ class AgrivlaDatasetV1(tfds.core.GeneratorBasedBuilder):
                         'image': step['base_rgb'],
                         'wrist_image': step['wrist_rgb'],
                         'state': step['joint_positions'].astype(np.float32),
+                        'prompt': step['prompt'],
                     },
                     'action': step['control'].astype(np.float32),
                     'discount': 1.0,
