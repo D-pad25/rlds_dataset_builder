@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 import tensorflow_datasets as tfds
 from agrivla_dataset_v2_dataset_builder import AgrivlaDatasetV2
-
+from pathlib import Path
 def render_frame(base_img, wrist_img, state, action, prompt):
     # Combine images side by side
     base = cv2.cvtColor(base_img, cv2.COLOR_RGB2BGR)
@@ -79,7 +79,7 @@ def create_episode_video(output_path="~/Thesis/Data/sem2/rlds_converted/v2Test.m
 
     # Write video
     h, w, _ = frames[0].shape
-    writer = cv2.VideoWriter(output_path, cv2.VideoWriter_fourcc(*"mp4v"), fps, (w, h))
+    writer = cv2.VideoWriter(str(output_path).replace("~", str(Path.home())), cv2.VideoWriter_fourcc(*"mp4v"), fps, (w, h))
     for f in frames:
         writer.write(f)
     writer.release()
