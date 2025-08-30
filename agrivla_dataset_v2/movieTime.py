@@ -34,7 +34,7 @@ def render_frame(base_img, wrist_img, state, action, prompt):
 
     return combined
 
-def create_episode_video(output_path=r"~\Thesis\Data\sem2\rlds_converted\v2Test.mp4", fps=30):
+def create_episode_video(output_path="~/Thesis/Data/sem2/rlds_converted/v2Test.mp4", fps=30):
     builder = AgrivlaDatasetV2(data_dir="~/tensorflow_datasets")
     builder.download_and_prepare()
     ds = builder.as_dataset(split="train")
