@@ -99,7 +99,7 @@ class AgrivlaDatasetV2(tfds.core.GeneratorBasedBuilder):
         return {
             'train': self._generate_examples(
             # path='/mnt/e/Round1_addedPrompt/pkl/*'),
-            path = '/mnt/d/Sem2/Round_1/test_tfds/*'),
+            path = '/mnt/d/Sem2/Round_1/test_checks/*'),
         }
 
     def _generate_examples(self, path) -> Iterator[Tuple[str, Any]]:
