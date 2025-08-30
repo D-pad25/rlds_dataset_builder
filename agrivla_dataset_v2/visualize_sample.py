@@ -3,10 +3,10 @@ import numpy as np
 import tensorflow_datasets as tfds
 
 # 👇 Import your dataset builder explicitly
-from agrivla_dataset_v1_dataset_builder import AgrivlaDatasetV1
+from agrivla_dataset_v2.agrivla_dataset_v2_dataset_builder import AgrivlaDatasetV2
 
 # 👇 Instantiate and load it locally
-builder = AgrivlaDatasetV1(data_dir="~/tensorflow_datasets")
+builder = AgrivlaDatasetV2(data_dir="~/tensorflow_datasets")
 builder.download_and_prepare()
 ds = builder.as_dataset(split='train')
 

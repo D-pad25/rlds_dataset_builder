@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 import tensorflow_datasets as tfds
-from agrivla_dataset_v1_dataset_builder import AgrivlaDatasetV1
+from agrivla_dataset_v2.agrivla_dataset_v2_dataset_builder import AgrivlaDatasetV2
 
 def render_frame(base_img, wrist_img, state, action, prompt):
     # Combine images side by side
@@ -35,7 +35,7 @@ def render_frame(base_img, wrist_img, state, action, prompt):
     return combined
 
 def create_episode_video(output_path="/mnt/e/VLA_data/movie/testprompt.mp4", fps=12):
-    builder = AgrivlaDatasetV1(data_dir="/mnt/e/TFDS_data/addedPromp")
+    builder = AgrivlaDatasetV2(data_dir="/mnt/e/TFDS_data/addedPromp")
     builder.download_and_prepare()
     ds = builder.as_dataset(split="train")
     episode = next(iter(tfds.as_numpy(ds.take(1))))  # Just one episode

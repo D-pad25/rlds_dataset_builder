@@ -7,10 +7,11 @@ import tensorflow_datasets as tfds
 import tensorflow_hub as hub
 import os
 import pickle
-import joblib
+from resize_pkl import resize_with_pad
 
-class AgrivlaDatasetV1(tfds.core.GeneratorBasedBuilder):
-    """DatasetBuilder for AgrivlaDatasetV1."""
+
+class AgrivlaDatasetV2(tfds.core.GeneratorBasedBuilder):
+    """DatasetBuilder for AgrivlaDatasetV2."""
 
     VERSION = tfds.core.Version('1.0.1')
     RELEASE_NOTES = {
@@ -97,15 +98,11 @@ class AgrivlaDatasetV1(tfds.core.GeneratorBasedBuilder):
         """Define data splits."""
         return {
             'train': self._generate_examples(
-            # path='/mnt/e/VLA_data/CleanData/*'),
-            # Test on E:\VLA_data\CleanData224\v5
-            # E:\VLA_data\JoblibData224_Steps
-            path='/mnt/e/Round1_addedPrompt/joblib/*'),
-            # 'val': self._generate_examples(path='data/val/episode_*.npy'),
+            path='/mnt/e/Round1_addedPrompt/pkl/*'),
         }
 
     def _generate_examples(self, path) -> Iterator[Tuple[str, Any]]:
-        """Generator of episodes from single-step .joblib files."""
+        """Generator of episodes from single-step .pkl files."""
 
         # Step 1: Find all episode directories
         episode_dirs = sorted(glob.glob(path))  # e.g. /data/train/episode_*
@@ -113,7 +110,9 @@ class AgrivlaDatasetV1(tfds.core.GeneratorBasedBuilder):
 
         def _parse_example(episode_dir):
             # Step 2: Load and sort all step .pkl files within the episode
-            step_files = sorted(glob.glob(os.path.join(episode_dir, '*.joblib')))
+            step_files = sorted(glob.glob(os.path.join(episode_dir, '*.pkl')))
+            if not step_files:
+                print(f"⚠️ No .pkl steps found in: {episode_dir}")
 
             # Language instruction (can be customized later)
             instruction = "Pick a ripe, red tomato and drop it in the blue bucket."
@@ -123,10 +122,15 @@ class AgrivlaDatasetV1(tfds.core.GeneratorBasedBuilder):
 
             episode = []
             for i, step_path in enumerate(step_files):
-                # with open(step_path, 'rb') as f:
-                #     step = pickle.load(f)
-                step = joblib.load(step_path)  # Load the step data
+                # Load the step data
+                with open(step_path, 'rb') as f:
+                    step = pickle.load(f)
 
+                # pad images as per policy requirements
+                step['base_rgb'] = resize_with_pad(step['base_rgb'], 224, 224)
+                step['wrist_rgb'] = resize_with_pad(step['wrist_rgb'], 224, 224)
+
+                # Append step data
                 episode.append({
                     'observation': {
                         'image': step['base_rgb'],
