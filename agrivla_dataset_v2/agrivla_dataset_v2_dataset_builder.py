@@ -98,7 +98,8 @@ class AgrivlaDatasetV2(tfds.core.GeneratorBasedBuilder):
         """Define data splits."""
         return {
             'train': self._generate_examples(
-            path='/mnt/e/Round1_addedPrompt/pkl/*'),
+            # path='/mnt/e/Round1_addedPrompt/pkl/*'),
+            path = '/home/d_pad25/Thesis/Data/sem2/*'),
         }
 
     def _generate_examples(self, path) -> Iterator[Tuple[str, Any]]:
