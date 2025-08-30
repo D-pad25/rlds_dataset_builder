@@ -53,4 +53,4 @@ def visualize_dataset(dataset_name: str, data_dir: str = "~/tensorflow_datasets"
             break
 
 if __name__ == "__main__":
-    visualize_dataset("agrivla_dataset_v1", data_dir="/home/d_pad25/tensorflow_datasets", limit=5)
+    visualize_dataset("agrivla_dataset_v2", data_dir="/home/d_pad25/tensorflow_datasets", limit=5)
