@@ -131,6 +131,11 @@ class AgrivlaDatasetV2(tfds.core.GeneratorBasedBuilder):
                 step['base_rgb'] = resize_with_pad(step['base_rgb'], 224, 224)
                 step['wrist_rgb'] = resize_with_pad(step['wrist_rgb'], 224, 224)
 
+                # Set default prompt if not provided
+                default_prompt = "Pick a ripe, red tomato and drop it in the blue bucket."
+                if not step.get('prompt'):
+                    step['prompt'] = default_prompt
+
                 # Append step data
                 episode.append({
                     'observation': {
