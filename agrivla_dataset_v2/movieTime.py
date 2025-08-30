@@ -63,4 +63,4 @@ def create_episode_video(output_path=r"\Thesis\Data\sem2\rlds_converted\v2Test.m
     print(f"✅ Video saved to: {output_path}")
 
 if __name__ == "__main__":
-    create_episode_video("/mnt/e/VLA_data/movie/testtfds.mp4", fps=30)
+    create_episode_video(fps=30)
