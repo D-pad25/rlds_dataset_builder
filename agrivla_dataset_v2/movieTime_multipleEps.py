@@ -69,7 +69,7 @@ def create_videos(
             continue
 
         # Iterate steps as numpy
-        step_iter = tfds.as_numpy(steps_ds)
+        step_iter = steps_ds
 
         writer = None
         frame_count = 0
