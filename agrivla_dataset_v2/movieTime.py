@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 import tensorflow_datasets as tfds
-from agrivla_dataset_v2.agrivla_dataset_v2_dataset_builder import AgrivlaDatasetV2
+from agrivla_dataset_v2_dataset_builder import AgrivlaDatasetV2
 
 def render_frame(base_img, wrist_img, state, action, prompt):
     # Combine images side by side
