@@ -43,7 +43,7 @@ def render_frame(base_img, wrist_img, state, action, prompt):
 
 
 def create_videos(
-    output_dir="~/Thesis/Data/sem_2_rlds_converted_fromSSD",
+    output_dir="~/Thesis/Data/test_checks",
     fps=30,
     split="train",
     max_episodes=None,   # set to an int to limit how many episodes you export
